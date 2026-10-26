@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Купол — панель наблюдения</title>
+  <link rel="stylesheet" href="/app.css">
+  <script src="/app.js" defer></script>
+  <script src="/controls.js" defer></script>
+</head>
+<body>
+  <div class="shell">
+    <header class="header">
+      <div class="brand"><div class="brand-mark" aria-hidden="true"><span></span></div><div><div class="brand-title">КУПОЛ<span class="slash"> / </span><span class="brand-light">наблюдение</span></div><p>Телеметрия, устройства и события</p></div></div>
+      <div class="header-right"><span class="local-label"><i></i> Клиент v2 · локальная панель</span><time id="clock"></time></div>
+    </header>
+
+    <main>
+      <div class="page-intro"><div><div class="eyebrow">ЦЕНТР НАБЛЮДЕНИЯ</div><h1>Всё, что происходит внутри.</h1></div><span id="status-badge" class="status-badge idle"><i></i><span>Не подключено</span></span></div>
+      <section class="stats" aria-label="Показатели соединения">
+        <article class="stat"><span class="stat-label">УСТРОЙСТВА</span><div><strong id="node-count">—</strong><span id="online-count">нет данных</span></div><div class="stat-line"></div></article>
+        <article class="stat"><span class="stat-label">ЗАДЕРЖКА API</span><div><strong id="ping-value">—</strong><span>мс</span></div><div class="stat-line"></div></article>
+        <article class="stat"><span class="stat-label">ПОСЛЕДНИЕ ДАННЫЕ</span><div><strong class="small-value" id="last-data">—</strong><span id="packet-count">0 сообщений</span></div><div class="stat-line"></div></article>
+        <article class="stat"><span class="stat-label">ВАША СЕССИЯ</span><div><strong class="small-value" id="role-value">—</strong><span id="team-value">ожидание авторизации</span></div><div class="stat-line"></div></article>
+      </section>
+
+      <div class="workspace">
+        <aside class="connection panel">
+          <div class="panel-heading"><span class="section-number">01</span><h2>Подключение</h2></div>
+          <p class="muted">Укажите адрес API купола.<br>Телеметрия появится автоматически.</p>
+          <form id="connection-form">
+            <label for="url">Адрес купола</label>
+            <input id="url" name="url" placeholder="ws://хост:порт" spellcheck="false" autocomplete="off" required>
+            <p class="input-hint">Поддерживаются http(s):// и ws(s)://</p>
+            <div class="key-state"><span class="key-icon" aria-hidden="true">⌘</span><div><strong id="key-label">Проверяем ключ…</strong><span>Настройка в локальном .env</span></div><span id="key-dot" class="tiny-dot"></span></div>
+            <button type="submit" id="connect-button" class="button primary"><span>Подключить</span><span aria-hidden="true">↗</span></button>
+            <div class="secondary-actions"><button type="button" id="check-button" class="button secondary">Проверить один раз</button><button type="button" id="disconnect-button" class="button secondary">Отключить</button></div>
+          </form>
+          <div id="form-message" class="form-message" role="status"></div>
+          <div id="connection-error" class="connection-error" role="status" hidden></div>
+          <div class="diagnostics" aria-label="Этапы подключения"><h3>Проверка соединения</h3><div id="diagnostic-stages"></div></div>
+          <div class="connection-details"><div><span>Соединение</span><b id="connection-mode">ожидает запуска</b></div><div><span>Маршрут</span><b id="route-value">Напрямую</b></div><div><span>Время купола</span><b id="game-time">—</b></div><div><span>Режим</span><b class="accent-text" id="access-mode">Наблюдение</b></div></div>
+          <div class="info-note"><span aria-hidden="true">◉</span><p>Управление доступно в карточках устройств. Результат команд проверяется по телеметрии.</p></div>
+        </aside>
+
+        <section class="devices panel" aria-labelledby="devices-title">
+          <div class="panel-heading device-heading"><div class="heading-group"><span class="section-number">02</span><h2 id="devices-title">Устройства</h2><span class="count-badge" id="device-badge">0</span></div><input type="search" id="search" aria-label="Поиск устройства" placeholder="Найти устройство…"></div>
+          <div id="freshness" class="freshness"></div>
+          <div id="nodes" class="node-grid"></div>
+          <div id="empty-state" class="empty-state"><div class="radar" aria-hidden="true"><div class="radar-ring"></div><div class="dome-outline"></div><span class="radar-point"></span></div><h3 id="empty-title">Ожидание сигнала</h3><p id="empty-description">Подключитесь к куполу, чтобы увидеть<br>показания датчиков и состояние систем.</p><span class="empty-tag">ДАННЫЕ В РЕАЛЬНОМ ВРЕМЕНИ</span></div>
+        </section>
+      </div>
+
+      <section class="journal panel">
+        <div class="panel-heading journal-heading"><div class="heading-group"><span class="section-number">03</span><div class="tabs" role="tablist" aria-label="Журнал"><button role="tab" id="events-tab" aria-selected="true" class="tab active">События</button><button role="tab" id="chat-tab" aria-selected="false" class="tab">Сообщения</button><button role="tab" id="actions-tab" aria-selected="false" class="tab">Команды</button></div></div><span class="journal-note" id="journal-note">Текущий запуск панели</span></div>
+        <div id="events" class="event-list" role="log" aria-label="События подключения"></div>
+        <div id="messages" class="message-list" hidden></div>
+        <div id="command-log" class="message-list" hidden></div>
+      </section>
+    </main>
+    <footer><span>КУПОЛ <span class="footer-slash">/</span> API CLIENT</span><span>Локально на вашем компьютере <i></i> Python + WebSocket</span></footer>
+  </div>
+  <dialog id="controls-dialog" aria-labelledby="controls-title">
+    <div class="control-header"><div><span class="eyebrow">УПРАВЛЕНИЕ УЗЛОМ</span><h2 id="controls-title"></h2><p id="controls-node-id"></p></div><button id="controls-close" type="button" class="close-control" aria-label="Закрыть управление">×</button></div>
+    <div id="controls-live" class="control-live"></div>
+    <form id="device-control-form">
+      <label for="control-action">Команда или запрос</label><select id="control-action" required></select>
+      <div id="control-fields" class="control-fields"></div><p id="control-hint" class="control-hint"></p>
+      <details id="operator-actions"><summary>Физические действия оператора</summary><p id="operator-list"></p></details>
+      <div class="control-preview"><span>Будет отправлено</span><pre id="control-preview">Выберите команду.</pre></div>
+      <button id="control-send" type="submit" class="button primary" disabled>Выполнить команду</button>
+    </form>
+    <div id="control-error" class="connection-error" role="alert" hidden></div>
+    <section class="control-result"><h3>Результат</h3><div id="control-result" role="status">Команды ещё не отправлялись.</div></section>
+  </dialog>
+</body>
+</html>
