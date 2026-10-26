@@ -1,4 +1,0 @@
-team: 6IG23Ncy0S0QgMqOVKhQobVRRjYX4qHb
-
-deepseek: sk-5861fddaa04f44aa9d8db2e564dcab75
-

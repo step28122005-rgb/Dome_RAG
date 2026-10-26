@@ -1,3 +1,0 @@
-team: AAVzU2yQXmUu64IGERpdP7w3BH2rHQHp
-
-deepseek: sk-db52e53e8c304348af1a9e60009a21fa

@@ -1,3 +1,0 @@
-team: VEOqMcc8TnqaC2gqyTpgUELkL0QoZ5eH
-
-deepseek: sk-bf88d0272daf4e928ed8e4ee36d5cabc
