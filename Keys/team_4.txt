@@ -1,1 +1,3 @@
-h9qaHqshJhEexpXxAGWrwlKEGFTeEjIm
+team: h9qaHqshJhEexpXxAGWrwlKEGFTeEjIm
+
+deepseek: sk-a9434a4cd95e4d7fac2de2537cb36c78
